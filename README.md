@@ -8,4 +8,8 @@ Add in smb.conf :
 
 check password script = python /scripts/check_password_hibpwnd.py
 
+Enable complexity :
+
+samba-tool domain passwordsettings set --complexity=on
+
 Restart Samba
