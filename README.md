@@ -1,3 +1,6 @@
+Installation
+========================
+
 Use haveibeenpwnd  for check password script in samba
 
 install haveibeenpwnd with command : pip install haveibeenpwnd
@@ -13,3 +16,11 @@ Enable complexity :
 samba-tool domain passwordsettings set --complexity=on
 
 Restart Samba
+
+
+Test
+=====
+
+python /scripts/check_password_hibpwnd.py 
+
+Enter test password
