@@ -1,7 +1,7 @@
-Installation
-========================
+Use check password script
+===========================
 
-Use haveibeenpwnd  for check password script in samba
+Block password change if it appears in haveibeenpwnd
 
 install haveibeenpwnd with command : pip install haveibeenpwnd
 
@@ -19,8 +19,19 @@ Restart Samba
 
 
 Test
-=====
+-----------------
 
-python /scripts/check_password_hibpwnd.py 
+python3 /scripts/check_password_hibpwnd.py
 
 Enter test password
+
+Audit Existing Password
+==============================
+
+List user hashes then test them with haveibeenpwnd
+
+Test
+-----------------
+
+apt-get install python3-pycryptodome
+python3 /scripts/audit_password.py
