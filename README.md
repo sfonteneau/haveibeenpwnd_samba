@@ -34,4 +34,5 @@ Test
 -----------------
 
 apt-get install python3-pycryptodome
+
 python3 /scripts/audit_password.py
