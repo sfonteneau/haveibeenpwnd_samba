@@ -3,13 +3,13 @@ Use check password script
 
 Block password change if it appears in haveibeenpwnd
 
-install haveibeenpwnd with command : pip install haveibeenpwnd
+install haveibeenpwnd with command : pip3 install haveibeenpwnd
 
 Add script in /scripts
 
 Add in smb.conf :
 
-check password script = python /scripts/check_password_hibpwnd.py
+check password script = python3 /scripts/check_password_hibpwnd.py
 
 Enable complexity :
 
