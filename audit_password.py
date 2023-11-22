@@ -5,7 +5,8 @@ import ldb
 import optparse
 import samba.getopt as options
 import requests
-
+import sys
+import argparse
 from samba.auth import system_session
 from samba.credentials import Credentials
 from samba.dcerpc import security
@@ -19,6 +20,11 @@ try:
     from Cryptodome import Random
 except:
     from Crypto import Random
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--fileleak', dest='fileleak')
+args = parser.parse_args()
 
 smbconf="/etc/samba/smb.conf"
 parser = optparse.OptionParser(smbconf)
@@ -53,8 +59,20 @@ for entry in dict_hash:
     if len(dict_hash[entry]) > 1:
         print('Account with the same password : %s' % (dict_hash[entry]))
 
-for nthash in dict_hash:
-    result = requests.get(r"https://api.pwnedpasswords.com/range/%s?mode=ntlm" % nthash[:5])
-    resultihb = {h.split(':')[0]:h.split(':')[1] for h in  result.content.decode('utf-8').split('\r\n')}
-    if nthash[5:] in resultihb:
-        print('sAMAccountName %s with %s nthash. This password has been seen %s times before' % (dict_hash[nthash],nthash,resultihb[nthash[5:]]))
+if args.fileleak:
+    file_name_ihbpp = open(args.fileleak)
+    while True:
+        data = file_name_ihbpp.readlines(10000000)
+        if not data:
+            break
+        for d in data:
+            nthash = d.split(':',1)[0]
+            leak_nb = d.split(':',1)[1]
+            if nthash in dict_hash:
+                print('sAMAccountName %s with %s nthash. This password has been seen %s times before' % (dict_hash[nthash],nthash, leak_nb))
+else:
+    for nthash in dict_hash:
+        result = requests.get(r"https://api.pwnedpasswords.com/range/%s?mode=ntlm" % nthash[:5])
+        resultihb = {h.split(':')[0]:h.split(':')[1] for h in  result.content.decode('utf-8').split('\r\n')}
+        if nthash[5:] in resultihb:
+            print('sAMAccountName %s with %s nthash. This password has been seen %s times before' % (dict_hash[nthash],nthash,resultihb[nthash[5:]]))
