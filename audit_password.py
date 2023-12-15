@@ -24,6 +24,7 @@ except:
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--fileleak', dest='fileleak')
+parser.add_argument('--ldapfilter', dest='ldapfilter', default='(&(objectClass=user)(!(objectClass=computer)))',help='Ldap filter')
 args = parser.parse_args()
 
 smbconf="/etc/samba/smb.conf"
@@ -39,7 +40,7 @@ testpawd.lp = lp
 
 dict_hash = {}
 
-for user in samdb.search(base=samdb.get_default_basedn(), expression=r"(&(objectClass=user)(!(objectClass=computer)))"):
+for user in samdb.search(base=samdb.get_default_basedn(), expression=r"(&(objectClass=user)%s)" % args.ldapfilter):
    
     Random.atfork()
 
