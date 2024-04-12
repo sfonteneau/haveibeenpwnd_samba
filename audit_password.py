@@ -16,12 +16,6 @@ from samba.param import LoadParm
 from samba.samdb import SamDB
 from samba.netcmd.user import GetPasswordCommand
 
-try:
-    from Cryptodome import Random
-except:
-    from Crypto import Random
-
-
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--fileleak', dest='fileleak')
 parser.add_argument('--ldapfilter', dest='ldapfilter', default='(&(objectClass=user)(!(objectClass=computer)))',help='Ldap filter')
@@ -35,17 +29,13 @@ creds = Credentials()
 creds.guess(lp)
 
 samdb = SamDB( session_info=system_session(),credentials=creds, lp=lp)
-testpawd = GetPasswordCommand()
-testpawd.lp = lp
 
 dict_hash = {}
 
 for user in samdb.search(base=samdb.get_default_basedn(), expression=r"(&(objectClass=user)%s)" % args.ldapfilter):
-   
-    Random.atfork()
 
     passwordattr = 'unicodePwd'
-    password = testpawd.get_account_attributes(samdb,None,samdb.get_default_basedn(),filter="(sAMAccountName=%s)" % str(user["sAMAccountName"]) ,scope=ldb.SCOPE_SUBTREE,attrs=[passwordattr],decrypt=False)
+    password = samdb.search(samdb.get_default_basedn(),expression="(sAMAccountName=%s)" % str(user["sAMAccountName"]) ,scope=ldb.SCOPE_SUBTREE,attrs=[passwordattr])[0]
     if not passwordattr in password:
         continue
 
